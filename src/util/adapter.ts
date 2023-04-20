@@ -1,10 +1,14 @@
-import type { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v9';
+import type { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v10';
 
 /**
- * Methods that are provided by the @discordjs/voice library to implementations of
+ * Methods that are provided by the \@discordjs/voice library to implementations of
  * Discord gateway DiscordGatewayAdapters.
  */
 export interface DiscordGatewayAdapterLibraryMethods {
+	/**
+	 * Call this when the adapter can no longer be used (e.g. due to a disconnect from the main gateway)
+	 */
+	destroy(): void;
 	/**
 	 * Call this when you receive a VOICE_SERVER_UPDATE payload that is relevant to the adapter.
 	 *
@@ -17,10 +21,6 @@ export interface DiscordGatewayAdapterLibraryMethods {
 	 * @param data - The inner data of the VOICE_STATE_UPDATE payload
 	 */
 	onVoiceStateUpdate(data: GatewayVoiceStateUpdateDispatchData): void;
-	/**
-	 * Call this when the adapter can no longer be used (e.g. due to a disconnect from the main gateway)
-	 */
-	destroy(): void;
 }
 
 /**
@@ -28,18 +28,17 @@ export interface DiscordGatewayAdapterLibraryMethods {
  */
 export interface DiscordGatewayAdapterImplementerMethods {
 	/**
-	 * Implement this method such that the given payload is sent to the main Discord gateway connection.
-	 *
-	 * @param payload - The payload to send to the main Discord gateway connection
-	 *
-	 * @returns `false` if the payload definitely failed to send - in this case, the voice connection disconnects
-	 */
-	sendPayload(payload: any): boolean;
-	/**
-	 * This will be called by @discordjs/voice when the adapter can safely be destroyed as it will no
+	 * This will be called by \@discordjs/voice when the adapter can safely be destroyed as it will no
 	 * longer be used.
 	 */
 	destroy(): void;
+	/**
+	 * Implement this method such that the given payload is sent to the main Discord gateway connection.
+	 *
+	 * @param payload - The payload to send to the main Discord gateway connection
+	 * @returns `false` if the payload definitely failed to send - in this case, the voice connection disconnects
+	 */
+	sendPayload(payload: any): boolean;
 }
 
 /**

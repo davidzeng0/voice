@@ -1,5 +1,4 @@
-import { TypedEmitter } from 'tiny-typed-emitter';
-import type { Awaited } from '../util/util';
+import { EventEmitter } from 'node:events';
 
 /**
  * The known data for a user in a Discord voice connection.
@@ -11,30 +10,27 @@ export interface VoiceUserData {
 	audioSSRC: number;
 
 	/**
+	 * The Discord user id of the user.
+	 */
+	userId: string;
+
+	/**
 	 * The SSRC of the user's video stream (if one exists)
 	 * Cannot be 0. If undefined, the user has no video stream.
 	 */
 	videoSSRC?: number;
-
-	/**
-	 * The Discord user id of the user.
-	 */
-	userId: string;
 }
 
-/**
- * The events that an SSRCMap may emit.
- */
-export interface SSRCMapEvents {
-	create: (newData: VoiceUserData) => Awaited<void>;
-	update: (oldData: VoiceUserData | undefined, newData: VoiceUserData) => Awaited<void>;
-	delete: (deletedData: VoiceUserData) => Awaited<void>;
+export interface SSRCMap extends EventEmitter {
+	on(event: 'create', listener: (newData: VoiceUserData) => void): this;
+	on(event: 'update', listener: (oldData: VoiceUserData | undefined, newData: VoiceUserData) => void): this;
+	on(event: 'delete', listener: (deletedData: VoiceUserData) => void): this;
 }
 
 /**
  * Maps audio SSRCs to data of users in voice connections.
  */
-export class SSRCMap extends TypedEmitter<SSRCMapEvents> {
+export class SSRCMap extends EventEmitter {
 	/**
 	 * The underlying map.
 	 */
@@ -48,7 +44,7 @@ export class SSRCMap extends TypedEmitter<SSRCMapEvents> {
 	/**
 	 * Updates the map with new user data
 	 *
-	 * @param data The data to update with
+	 * @param data - The data to update with
 	 */
 	public update(data: VoiceUserData) {
 		const existing = this.map.get(data.audioSSRC);
@@ -66,7 +62,7 @@ export class SSRCMap extends TypedEmitter<SSRCMapEvents> {
 	/**
 	 * Gets the stored voice data of a user.
 	 *
-	 * @param target The target, either their user id or audio SSRC
+	 * @param target - The target, either their user id or audio SSRC
 	 */
 	public get(target: number | string) {
 		if (typeof target === 'number') {
@@ -85,8 +81,7 @@ export class SSRCMap extends TypedEmitter<SSRCMapEvents> {
 	/**
 	 * Deletes the stored voice data about a user.
 	 *
-	 * @param target The target of the delete operation, either their audio SSRC or user id
-	 *
+	 * @param target - The target of the delete operation, either their audio SSRC or user id
 	 * @returns The data that was deleted, if any
 	 */
 	public delete(target: number | string) {
@@ -96,6 +91,7 @@ export class SSRCMap extends TypedEmitter<SSRCMapEvents> {
 				this.map.delete(target);
 				this.emit('delete', existing);
 			}
+
 			return existing;
 		}
 
