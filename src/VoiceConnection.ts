@@ -361,9 +361,7 @@ export class VoiceConnection extends EventEmitter {
 			dies, and then it is up to the user to decide how they wish to handle this.
 		*/
 
-		if(this.packets.state &&
-			this.packets.state.session_id == packet.session_id &&
-			this.packets.server?.endpoint)
+		if (this.packets.state && this.packets.state.session_id == packet.session_id && this.packets.server?.endpoint)
 			/* session seems to be server sided */
 			this.configureNetworking();
 		this.packets.state = packet;
