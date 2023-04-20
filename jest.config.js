@@ -5,8 +5,7 @@ module.exports = {
 	testMatch: ['**/+(*.)+(spec|test).+(ts|js)?(x)'],
 	testEnvironment: 'node',
 	collectCoverage: true,
-	collectCoverageFrom: ['src/**/*.ts', '!src/**/__tests__/**/*.ts'],
+	collectCoverageFrom: ['src/**/*.ts'],
 	coverageDirectory: 'coverage',
-	coverageReporters: ['text', 'lcov', 'clover'],
-	coveragePathIgnorePatterns: ['src/index.ts'],
+	coverageReporters: ['text', 'lcov', 'cobertura'],
 };

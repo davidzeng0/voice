@@ -6,7 +6,7 @@
 export function abortAfter(delay: number): [AbortController, AbortSignal] {
 	const ac = new AbortController();
 	const timeout = setTimeout(() => ac.abort(), delay);
-	// @ts-ignore
+	// @ts-expect-error: No type for timeout
 	ac.signal.addEventListener('abort', () => clearTimeout(timeout));
 	return [ac, ac.signal];
 }
