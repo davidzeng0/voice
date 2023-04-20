@@ -352,8 +352,6 @@ export class VoiceConnection extends EventEmitter {
 	 * @param packet - The received `VOICE_STATE_UPDATE` packet
 	 */
 	private addStatePacket(packet: GatewayVoiceStateUpdateDispatchData) {
-		this.packets.state = packet;
-
 		if (packet.self_deaf !== undefined) this.joinConfig.selfDeaf = packet.self_deaf;
 		if (packet.self_mute !== undefined) this.joinConfig.selfMute = packet.self_mute;
 		if (packet.channel_id) this.joinConfig.channelId = packet.channel_id;
@@ -362,6 +360,13 @@ export class VoiceConnection extends EventEmitter {
 			as it may have disconnected due to network failure. This will be gracefully handled once the voice websocket
 			dies, and then it is up to the user to decide how they wish to handle this.
 		*/
+
+		if(this.packets.state &&
+			this.packets.state.session_id == packet.session_id &&
+			this.packets.server?.endpoint)
+			/* session seems to be server sided */
+			this.configureNetworking();
+		this.packets.state = packet;
 	}
 
 	/**
