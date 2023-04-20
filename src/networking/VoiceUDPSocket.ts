@@ -32,15 +32,15 @@ export function parseLocalPacket(message: Buffer): SocketConfig {
 }
 
 interface KeepAlive {
-	value: number;
 	timestamp: number;
+	value: number;
 }
 
 export interface VoiceUDPSocketEvents {
-	error: (error: Error) => Awaited<void>;
-	close: () => Awaited<void>;
-	debug: (message: string) => Awaited<void>;
-	message: (message: Buffer) => Awaited<void>;
+	close(): Awaited<void>;
+	debug(message: string): Awaited<void>;
+	error(error: Error): Awaited<void>;
+	message(message: Buffer): Awaited<void>;
 }
 
 /**
@@ -107,7 +107,7 @@ export class VoiceUDPSocket extends EventEmitter {
 	/**
 	 * The debug logger function, if debugging is enabled.
 	 */
-	private readonly debug: null | ((message: string) => void);
+	private readonly debug: ((message: string) => void) | null;
 
 	/**
 	 * Creates a new VoiceUDPSocket.
@@ -144,6 +144,7 @@ export class VoiceUDPSocket extends EventEmitter {
 			// Delete all keep alives up to and including the received one
 			this.keepAlives.splice(0, index);
 		}
+
 		// Propagate the message
 		this.emit('message', buffer);
 	}
