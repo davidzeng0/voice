@@ -12,7 +12,8 @@
 		"docs": "yarn build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/voice/*'",
-		"release": "cliff-jumper"
+		"release": "cliff-jumper",
+		"git-publish": "git-publish -b dist"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -78,6 +79,7 @@
 		"prettier": "^2.8.7",
 		"tsup": "^6.7.0",
 		"tweetnacl": "^1.0.3",
+		"git-publish": "^2.0.0",
 		"typescript": "^5.0.4"
 	},
 	"engines": {
