@@ -445,7 +445,6 @@ var VoiceWebSocket = class extends EventEmitter2 {
       const stringified = JSON.stringify(packet);
       this.debug?.(`>> ${stringified}`);
       this.ws.send(stringified);
-      return;
     } catch (error) {
       const err = error;
       this.emit("error", err);

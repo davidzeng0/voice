@@ -498,7 +498,6 @@ var VoiceWebSocket = class extends import_node_events2.EventEmitter {
       const stringified = JSON.stringify(packet);
       this.debug?.(`>> ${stringified}`);
       this.ws.send(stringified);
-      return;
     } catch (error) {
       const err = error;
       this.emit("error", err);
